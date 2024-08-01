@@ -71,8 +71,8 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [
-		{ title: data ? 'Epic Notes' : 'Error | Epic Notes' },
-		{ name: 'description', content: `Your own captain's log` },
+		{ title: data ? 'Couponer' : 'Error | Couponer' },
+		{ name: 'description', content: `Create discount coupons for you business` },
 	]
 }
 
@@ -92,7 +92,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 							id: true,
 							name: true,
 							username: true,
-							image: { select: { id: true } },
 							roles: {
 								select: {
 									name: true,
@@ -193,8 +192,6 @@ function App() {
 	const user = useOptionalUser()
 	const theme = useTheme()
 	const matches = useMatches()
-	const isOnSearchPage = matches.find((m) => m.id === 'routes/users+/index')
-	const searchBar = isOnSearchPage ? null : <SearchBar status="idle" />
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
 
@@ -209,10 +206,9 @@ function App() {
 				<header className="container py-6">
 					<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 						<Logo />
-						<div className="ml-auto hidden max-w-sm flex-1 sm:block">
-							{searchBar}
-						</div>
 						<div className="flex items-center gap-10">
+							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+
 							{user ? (
 								<UserDropdown />
 							) : (
@@ -221,17 +217,11 @@ function App() {
 								</Button>
 							)}
 						</div>
-						<div className="block w-full sm:hidden">{searchBar}</div>
 					</nav>
 				</header>
 
 				<div className="flex-1">
 					<Outlet />
-				</div>
-
-				<div className="container flex justify-between pb-5">
-					<Logo />
-					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 				</div>
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />

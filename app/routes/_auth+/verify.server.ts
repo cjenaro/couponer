@@ -3,17 +3,12 @@ import { parseWithZod } from '@conform-to/zod'
 import { json } from '@remix-run/node'
 import { z } from 'zod'
 import { handleVerification as handleChangeEmailVerification } from '#app/routes/settings+/profile.change-email.server.tsx'
-import { twoFAVerificationType } from '#app/routes/settings+/profile.two-factor.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { getDomainUrl } from '#app/utils/misc.tsx'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { generateTOTP, verifyTOTP } from '#app/utils/totp.server.ts'
-import { type twoFAVerifyVerificationType } from '../settings+/profile.two-factor.verify.tsx'
-import {
-	handleVerification as handleLoginTwoFactorVerification,
-	shouldRequestTwoFA,
-} from './login.server.ts'
+
 import { handleVerification as handleOnboardingVerification } from './onboarding.server.ts'
 import { handleVerification as handleResetPasswordVerification } from './reset-password.server.ts'
 import {
@@ -53,24 +48,6 @@ export function getRedirectToUrl({
 		redirectToUrl.searchParams.set(redirectToQueryParam, redirectTo)
 	}
 	return redirectToUrl
-}
-
-export async function requireRecentVerification(request: Request) {
-	const userId = await requireUserId(request)
-	const shouldReverify = await shouldRequestTwoFA(request)
-	if (shouldReverify) {
-		const reqUrl = new URL(request.url)
-		const redirectUrl = getRedirectToUrl({
-			request,
-			target: userId,
-			type: twoFAVerificationType,
-			redirectTo: reqUrl.pathname + reqUrl.search,
-		})
-		throw await redirectWithToast(redirectUrl.toString(), {
-			title: 'Please Reverify',
-			description: 'Please reverify your account before proceeding',
-		})
-	}
 }
 
 export async function prepareVerification({
@@ -117,7 +94,7 @@ export async function isCodeValid({
 	target,
 }: {
 	code: string
-	type: VerificationTypes | typeof twoFAVerifyVerificationType
+	type: VerificationTypes
 	target: string
 }) {
 	const verification = await prisma.verification.findUnique({
@@ -192,9 +169,6 @@ export async function validateRequest(
 		case 'change-email': {
 			await deleteVerification()
 			return handleChangeEmailVerification({ request, body, submission })
-		}
-		case '2fa': {
-			return handleLoginTwoFactorVerification({ request, body, submission })
 		}
 	}
 }
