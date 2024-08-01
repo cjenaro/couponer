@@ -37,11 +37,11 @@ export function createPassword(password: string = faker.internet.password()) {
 	}
 }
 
-let noteImages: Array<Awaited<ReturnType<typeof img>>> | undefined
-export async function getNoteImages() {
-	if (noteImages) return noteImages
+let codeImages: Array<Awaited<ReturnType<typeof img>>> | undefined
+export async function getCodeImages() {
+	if (codeImages) return codeImages
 
-	noteImages = await Promise.all([
+	codeImages = await Promise.all([
 		img({
 			altText: 'a nice country house',
 			filepath: './tests/fixtures/images/notes/0.png',
@@ -85,20 +85,7 @@ export async function getNoteImages() {
 		}),
 	])
 
-	return noteImages
-}
-
-let userImages: Array<Awaited<ReturnType<typeof img>>> | undefined
-export async function getUserImages() {
-	if (userImages) return userImages
-
-	userImages = await Promise.all(
-		Array.from({ length: 10 }, (_, index) =>
-			img({ filepath: `./tests/fixtures/images/user/${index}.jpg` }),
-		),
-	)
-
-	return userImages
+	return codeImages
 }
 
 export async function img({

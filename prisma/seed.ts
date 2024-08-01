@@ -1,16 +1,13 @@
 import { faker } from '@faker-js/faker'
 import { promiseHash } from 'remix-utils/promise'
 import { prisma } from '#app/utils/db.server.ts'
-import { MOCK_CODE_GITHUB } from '#app/utils/providers/constants'
 import {
 	cleanupDb,
 	createPassword,
 	createUser,
-	getNoteImages,
-	getUserImages,
+	getCodeImages,
 	img,
 } from '#tests/db-utils.ts'
-import { insertGitHubUser } from '#tests/mocks/github.ts'
 
 async function seed() {
 	console.log('🌱 Seeding...')
@@ -21,7 +18,7 @@ async function seed() {
 	console.timeEnd('🧹 Cleaned up the database...')
 
 	console.time('🔑 Created permissions...')
-	const entities = ['user', 'note']
+	const entities = ['user', 'code']
 	const actions = ['create', 'read', 'update', 'delete']
 	const accesses = ['own', 'any'] as const
 
@@ -63,8 +60,7 @@ async function seed() {
 
 	const totalUsers = 5
 	console.time(`👤 Created ${totalUsers} users...`)
-	const noteImages = await getNoteImages()
-	const userImages = await getUserImages()
+	const codeImages = await getCodeImages()
 
 	for (let index = 0; index < totalUsers; index++) {
 		const userData = createUser()
@@ -74,9 +70,8 @@ async function seed() {
 				data: {
 					...userData,
 					password: { create: createPassword(userData.username) },
-					image: { create: userImages[index % userImages.length] },
 					roles: { connect: { name: 'user' } },
-					notes: {
+					codes: {
 						create: Array.from({
 							length: faker.number.int({ min: 1, max: 3 }),
 						}).map(() => ({
@@ -87,7 +82,7 @@ async function seed() {
 									length: faker.number.int({ min: 1, max: 3 }),
 								}).map(() => {
 									const imgNumber = faker.number.int({ min: 0, max: 9 })
-									const img = noteImages[imgNumber]
+									const img = codeImages[imgNumber]
 									if (!img) {
 										throw new Error(`Could not find image #${imgNumber}`)
 									}
@@ -140,21 +135,15 @@ async function seed() {
 		}),
 	})
 
-	const githubUser = await insertGitHubUser(MOCK_CODE_GITHUB)
-
 	await prisma.user.create({
 		select: { id: true },
 		data: {
 			email: 'kody@kcd.dev',
 			username: 'kody',
 			name: 'Kody',
-			image: { create: kodyImages.kodyUser },
 			password: { create: createPassword('kodylovesyou') },
-			connections: {
-				create: { providerName: 'github', providerId: githubUser.profile.id },
-			},
 			roles: { connect: [{ name: 'admin' }, { name: 'user' }] },
-			notes: {
+			codes: {
 				create: [
 					{
 						id: 'd27a197e',
