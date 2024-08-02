@@ -16,7 +16,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
 			name: true,
 			username: true,
 			createdAt: true,
-			image: { select: { id: true } },
 		},
 		where: {
 			username: params.username,
@@ -40,18 +39,6 @@ export default function ProfileRoute() {
 			<Spacer size="4xs" />
 
 			<div className="container flex flex-col items-center rounded-3xl bg-muted p-12">
-				<div className="relative w-52">
-					<div className="absolute -top-40">
-						<div className="relative">
-							<img
-								src={getUserImgSrc(data.user.image?.id)}
-								alt={userDisplayName}
-								className="h-52 w-52 rounded-full object-cover"
-							/>
-						</div>
-					</div>
-				</div>
-
 				<Spacer size="sm" />
 
 				<div className="flex flex-col items-center">

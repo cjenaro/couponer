@@ -4,7 +4,7 @@ import { prisma } from '#app/utils/db.server.ts'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	invariantResponse(params.imageId, 'Image ID is required', { status: 400 })
-	const image = await prisma.userImage.findUnique({
+	const image = await prisma.codeImage.findUnique({
 		where: { id: params.imageId },
 		select: { contentType: true, blob: true },
 	})

@@ -39,11 +39,6 @@ export default function NotesRoute() {
 							to={`/users/${data.owner.username}`}
 							className="flex flex-col items-center justify-center gap-2 bg-muted pb-4 pl-8 pr-4 pt-12 lg:flex-row lg:justify-start lg:gap-4"
 						>
-							<img
-								src={getUserImgSrc(data.owner.image?.id)}
-								alt={ownerDisplayName}
-								className="h-16 w-16 rounded-full object-cover lg:h-24 lg:w-24"
-							/>
 							<h1 className="text-center text-base font-bold md:text-lg lg:text-left lg:text-2xl">
 								{ownerDisplayName}'s Codes
 							</h1>

@@ -38,9 +38,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			name: true,
 			username: true,
 			email: true,
-			image: {
-				select: { id: true },
-			},
 			_count: {
 				select: {
 					sessions: {
@@ -100,11 +97,6 @@ export default function EditUserProfile() {
 		<div className="flex flex-col gap-12">
 			<div className="flex justify-center">
 				<div className="relative h-52 w-52">
-					<img
-						src={getUserImgSrc(data.user.image?.id)}
-						alt={data.user.username}
-						className="h-full w-full rounded-full object-cover"
-					/>
 					<Button
 						asChild
 						variant="outline"
