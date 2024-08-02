@@ -13,15 +13,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		// want to send back the entire blob of the image. We'll send a URL they can
 		// use to download it instead.
 		include: {
-			image: {
-				select: {
-					id: true,
-					createdAt: true,
-					updatedAt: true,
-					contentType: true,
-				},
-			},
-			notes: {
+			codes: {
 				include: {
 					images: {
 						select: {
@@ -44,17 +36,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	return json({
 		user: {
 			...user,
-			image: user.image
-				? {
-						...user.image,
-						url: `${domain}/resources/user-images/${user.image.id}`,
-					}
-				: null,
-			notes: user.notes.map((note) => ({
-				...note,
-				images: note.images.map((image) => ({
+			codes: user.codes.map((code) => ({
+				...code,
+				images: code.images.map((image) => ({
 					...image,
-					url: `${domain}/resources/note-images/${image.id}`,
+					url: `${domain}/resources/code-images/${image.id}`,
 				})),
 			})),
 		},
