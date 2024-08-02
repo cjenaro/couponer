@@ -1,7 +1,6 @@
 /**
  * @vitest-environment jsdom
  */
-import { faker } from '@faker-js/faker'
 import { createRemixStub } from '@remix-run/testing'
 import { render, screen } from '@testing-library/react'
 import setCookieParser from 'set-cookie-parser'
