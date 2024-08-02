@@ -5,7 +5,7 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
 import { SearchBar } from '#app/components/search-bar.tsx'
 import { prisma } from '#app/utils/db.server.ts'
-import { cn, getUserImgSrc, useDelayedIsPending } from '#app/utils/misc.tsx'
+import { cn, useDelayedIsPending } from '#app/utils/misc.tsx'
 
 const UserSearchResultSchema = z.object({
 	id: z.string(),
@@ -80,11 +80,6 @@ export default function UsersRoute() {
 										to={user.username}
 										className="flex h-36 w-44 flex-col items-center justify-center rounded-lg bg-muted px-5 py-3"
 									>
-										<img
-											alt={user.name ?? user.username}
-											src={getUserImgSrc(user.imageId)}
-											className="h-16 w-16 rounded-full"
-										/>
 										{user.name ? (
 											<span className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-body-md">
 												{user.name}
